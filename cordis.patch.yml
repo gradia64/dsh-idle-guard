@@ -1,0 +1,15 @@
+# Layer installato da `dsh plugin add`. Per cambiare i valori, ridefinisci la
+# riga `idle-guard` nel cordis.patch.yml del profilo (la config va riscritta
+# per intero: i patch sostituiscono l'intero `config`, non fanno merge).
+- insert:
+    - id: idle-guard
+      name: dsh-idle-guard
+      config:
+        idleSeconds: 600
+        mode: drop
+        allowSources: []
+        humanRequiresRpc: false
+        guardSubagents: false
+        deferLimit: 10
+        debug: false
+        logToConsole: true

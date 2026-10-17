@@ -1,6 +1,6 @@
 # dsh-idle-guard
 
-Plugin per DeepSeek Harness (scritto contro **dsh 0.2.0-rc.2**) che blocca i turni
+Plugin per DeepSeek Harness (scritto contro **dsh 0.2.0-rc.2**, verificato con **0.2.1-rc.2**) che blocca i turni
 non avviati da un umano quando l'utente è inattivo da più di `idleSeconds`.
 
 ## Come decide
@@ -73,7 +73,7 @@ Rimozione: `dsh plugin --profile web remove dsh-idle-guard`.
 npm install && npm test
 ```
 
-I test simulano il bus eventi con le firme di 0.2.0-rc.2 (`agent/pre-step`,
+I test simulano il bus eventi con le firme di 0.2.0-rc.2 (invariate in 0.2.1-rc.2) (`agent/pre-step`,
 `inbox.nextTurn`, `{ kind: 'reject' }`): validano la logica, non il contratto con
 dsh. Dopo ogni aggiornamento di dsh rifai la prova reale (soglia bassa + job in
 background) e controlla che compaia la riga `BLOCCATO`.

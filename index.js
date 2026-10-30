@@ -1,5 +1,5 @@
 /**
- * Idle Guard per DeepSeek Harness (scritto contro dsh 0.2.0-rc.2, verificato con 0.2.1-rc.3).
+ * Idle Guard per DeepSeek Harness (scritto contro dsh 0.2.0-rc.2, verificato con 0.2.1-rc.5).
  *
  * Criterio: un turno è "umano" se il primo step reclama un messaggio con
  * `source.kind === 'user'` destinato a un agente root (stesso criterio che dsh

@@ -30,19 +30,19 @@ non avviati da un umano quando l'utente è inattivo da più di `idleSeconds`.
 | `debug` | `false` | Stampa su console ogni decisione presa al primo step di un turno |
 | `logToConsole` | `true` | Scrive anche su console. Serve nel profilo web, dove nessun exporter stampa `ctx.logger`; su profili CLI con exporter console mettilo a `false` per evitare doppioni |
 
-Per cambiarli, ridefinisci l'intera riga nel `cordis.patch.yml` del profilo:
+Per cambiarli, aggiungi una patch con `id: idle-guard` nel `cordis.patch.yml` del
+profilo (non un `insert`, che aggiungerebbe una seconda istanza del plugin). La
+`config` viene sostituita per intero, non unita: i campi omessi tornano ai default.
 
 ```yaml
-- insert:
-    - id: idle-guard
-      name: dsh-idle-guard
-      config:
-        idleSeconds: 900
-        mode: defer
-        allowSources: [goal, tool-jobs]
-        humanRequiresRpc: false
-        guardSubagents: false
-        deferLimit: 5
+- id: idle-guard
+  config:
+    idleSeconds: 900
+    mode: defer
+    allowSources: [goal, tool-jobs]
+    humanRequiresRpc: false
+    guardSubagents: false
+    deferLimit: 5
 ```
 
 ## Installazione

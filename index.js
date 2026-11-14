@@ -1,9 +1,12 @@
 /**
- * Idle Guard per DeepSeek Harness (scritto contro dsh 0.2.0-rc.2, verificato con 0.2.1-rc.5).
+ * Idle Guard per DeepSeek Harness (scritto contro dsh 0.2.0-rc.2, verificato con 0.2.2-rc.2).
  *
  * Criterio: un turno è "umano" se il primo step reclama un messaggio con
  * `source.kind === 'user'` destinato a un agente root (stesso criterio che dsh
- * usa in `goal/tool-goal/src/authority.ts` → hasDirectHumanInput). I turni
+ * usa in `goal/tool-goal/src/authority.ts` → hasDirectHumanInput). Un agente è
+ * "root" quando la sua sessione non è delegata, cioè
+ * `session.header.origin !== 'subagent'` (lo indica la guida di aggiornamento
+ * dsh 0.2.1-rc.3, che ha rimosso `ctx.agents.roots()`). I turni
  * umani passano sempre, con tutti i loro step. Un turno NON umano (schedule,
  * webhook, hook, job, goal, subagent-settled, team…) viene rifiutato in
  * `agent/pre-step` se dall'ultima attività umana sono passati più di
@@ -91,7 +94,9 @@ export function apply(ctx, config) {
   /** Messaggi rimandati (mode: defer), per agente. */
   const deferred = new Map()
 
-  const isRoot = agent => ctx.agents.roots().includes(agent)
+  // dsh 0.2.1-rc.3 ha rimosso ctx.agents.roots()/isOwnedBy(): il criterio
+  // documentato per gli agenti ordinari è `session.header.origin !== 'subagent'`.
+  const isRoot = agent => agent.session?.header?.origin !== 'subagent'
 
   const isHuman = (agent, message) =>
     message.source.kind === 'user'

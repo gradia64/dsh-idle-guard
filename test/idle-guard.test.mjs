@@ -9,20 +9,21 @@ Date.now = () => now
 function setup(cfg = {}) {
   const handlers = {}
   const logs = []
-  const roots = []
   const all = new Map()
   const ctx = {
     on: (ev, fn) => { (handlers[ev] ??= []).push(fn) },
     logger: () => ({ info: m => logs.push(m), warn: m => logs.push(m) }),
-    agents: { roots: () => roots, get: id => all.get(id) },
+    agents: { get: id => all.get(id) },
   }
   apply(ctx, Config(cfg))
   const emit = (ev, p) => (handlers[ev] ?? []).forEach(h => h(p))
   const preStep = (p) => handlers['agent/pre-step'][0](p, async () => ({ kind: 'enter', messages: p.messages }))
   function agent(id, root = true) {
-    const a = { id, inbox: { nextTurn: [] }, followed: [] }
+    // Un agente è root quando la sessione non è delegata: dsh 0.2.1-rc.3+ non
+    // espone più ctx.agents.roots(), conta session.header.origin.
+    const a = { id, session: { header: root ? {} : { origin: 'subagent' } }, inbox: { nextTurn: [] }, followed: [] }
     a.followup = m => { a.followed.push(m); a.inbox.nextTurn.push(m); emit('agent/inbox/inserted', { agent: a, message: m }) }
-    all.set(id, a); if (root) roots.push(a)
+    all.set(id, a) // serve a flushDeferred: riconsegna solo ad agenti ancora vivi
     return a
   }
   return { emit, preStep, agent, logs }

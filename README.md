@@ -1,10 +1,14 @@
 # dsh-idle-guard
 
-Plugin per DeepSeek Harness (scritto contro **dsh 0.2.0-rc.2**, verificato con **0.2.1-rc.5**) che blocca i turni
+Plugin per DeepSeek Harness (scritto contro **dsh 0.2.0-rc.2**, verificato con **0.2.2-rc.2**) che blocca i turni
 non avviati da un umano quando l'utente è inattivo da più di `idleSeconds`.
 
 ## Come decide
 
+- **Agente root**: la sua sessione non è delegata, cioè
+  `session.header.origin !== 'subagent'`. Da dsh 0.2.1-rc.3 non esiste più
+  `ctx.agents.roots()`; questo è il criterio documentato dalla guida di
+  aggiornamento `subagent-runtime-ownership`.
 - **Turno umano**: il primo step reclama un messaggio con `source.kind === 'user'`
   indirizzato a un agente *root* (lo stesso criterio di `hasDirectHumanInput` in
   `goal/tool-goal`). Passa sempre, con tutti i suoi step.
@@ -73,7 +77,7 @@ Rimozione: `dsh plugin --profile web remove dsh-idle-guard`.
 npm install && npm test
 ```
 
-I test simulano il bus eventi con le firme di 0.2.0-rc.2 (invariate fino a 0.2.1-rc.5) (`agent/pre-step`,
+I test simulano il bus eventi con le firme di 0.2.0-rc.2 (invariate fino a 0.2.2-rc.2) (`agent/pre-step`,
 `inbox.nextTurn`, `{ kind: 'reject' }`): validano la logica, non il contratto con
 dsh. Dopo ogni aggiornamento di dsh rifai la prova reale (soglia bassa + job in
 background) e controlla che compaia la riga `BLOCCATO`.
